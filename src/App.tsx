@@ -1,38 +1,81 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
+import { useCallback, useEffect, useRef, useState } from "react";
+import Webcam from "react-webcam";
 import "./App.css";
+import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
+import { usePinch } from "@use-gesture/react";
+
+const videoConstraints: MediaTrackConstraints = {
+  width: {
+    ideal: 4000,
+  },
+  height: {
+    ideal: 4000,
+  },
+  facingMode: { exact: "environment" },
+};
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [media, setMedia] = useState<any>();
+  const targetRef = useRef<HTMLDivElement>(null)
+
+  const getMedia = useCallback(async () => {
+    return await navigator.mediaDevices.enumerateDevices();
+  }, []);
+
+  useEffect(() => {
+    getMedia().then(setMedia);
+  }, []);
+
+  const [zoom, setZoom] = useState(1);
+
+  usePinch(({offset: [scale]}) => {
+    setZoom((z) => {
+      const nextZoom = z * scale
+      if (nextZoom < 1 ) {
+        return 1
+      }
+      if (nextZoom > 4) {
+        return 4
+      }
+      return nextZoom
+    })
+  }, {
+    target: targetRef,
+    scaleBounds: {
+      min: 1,
+      max: 4,
+    },
+  })
+
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://reactjs.org" target="_blank" rel="noreferrer">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-        <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-      </div>
-      <h1>React + Vite</h1>
-      <h2>On CodeSandbox!</h2>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR.
-        </p>
-
-        <p>
-          Tip: you can use the inspector button next to address bar to click on
-          components in the preview and open the code in the editor!
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+    <div style={{ width: "100%", height: "100%", backgroundColor: "red" }}>
+      {/* <p>{JSON.stringify(media)}</p> */}
+      {/* <TransformWrapper
+        centerZoomedOut={true}
+        limitToBounds={false}
+        smooth={false}
+        maxScale={4}
+        minPositionX={1}
+        maxPositionX={1}
+        minPositionY={1}
+        maxPositionY={1}
+        wheel={{ disabled: true }}
+        panning={{ disabled: true }}
+        zoomAnimation={{ disabled: true, size: 1 }}
+        doubleClick={{ disabled: true }}
+      >
+        <TransformComponent> */}
+          <div
+            ref={targetRef}
+            style={{ scale: zoom, width: "100%", height: "100%", objectFit: "cover", background: 'linear-gradient(90deg, rgba(2,0,36,1) 24%, rgba(0,212,255,1) 100%)' }}
+          ></div>
+          {/* <Webcam
+            videoConstraints={videoConstraints}
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          /> */}
+        {/* </TransformComponent>
+      </TransformWrapper> */}
     </div>
   );
 }
