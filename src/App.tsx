@@ -12,9 +12,25 @@ function App() {
   }, [getScreenshot]);
 
   return (
-    <div style={{ width: "100%", height: "100%", backgroundColor: "red" }}>
+    <div
+      style={{
+        position: "relative",
+        width: "100%",
+        height: "100%",
+        backgroundColor: "red",
+      }}
+    >
       <Camera ref={cameraRef} />
-      <button onClick={handleCapture}>Capture</button>
+      <button
+        onClick={handleCapture}
+        style={{
+          position: "absolute",
+          bottom: "50%",
+          left: 20,
+        }}
+      >
+        Capture
+      </button>
     </div>
   );
 }
