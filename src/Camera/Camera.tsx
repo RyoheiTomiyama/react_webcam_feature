@@ -50,7 +50,6 @@ export const Camera = forwardRef<Webcam>(function Camera(_, cameraRef) {
           screenshotFormat="image/jpeg"
           screenshotQuality={1}
           videoConstraints={videoConstraints}
-          forceScreenshotSourceSize
           style={{
             width: "100%",
             height: "100%",
