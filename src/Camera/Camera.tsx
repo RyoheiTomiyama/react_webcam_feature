@@ -32,7 +32,14 @@ export const Camera = forwardRef<Webcam>(function Camera(_, cameraRef) {
   );
 
   return (
-    <div style={{ width: "100%", height: "100%", backgroundColor: "red" }}>
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        backgroundColor: "red",
+        overflow: "hidden",
+      }}
+    >
       {/* <p>{JSON.stringify(media)}</p> */}
       <div
         ref={targetRef}
