@@ -39,9 +39,11 @@ export const useCamera = ({ ref }: UseCameraProps) => {
     }
 
     // draw canvas
+    const zoom = video.getBoundingClientRect().width / video.clientWidth;
     ctx.imageSmoothingEnabled = true;
-    const dx = (width - video.videoWidth) / 2;
-    const dy = (height - video.videoHeight) / 2;
+    ctx.scale(zoom, zoom);
+    const dx = (width / zoom - video.videoWidth) / 2;
+    const dy = (height / zoom - video.videoHeight) / 2;
     ctx.drawImage(video, dx, dy, video.videoWidth, video.videoHeight);
 
     // output
@@ -71,6 +73,7 @@ function downloadBase64File(contentBase64: string, fileName: string) {
 const calcOutpuSize = (video: HTMLVideoElement) => {
   // 書き出し対比率
   const ratio = video.clientWidth / video.clientHeight;
+
   // カメラの出力画質
   const originalWidth = video.videoWidth;
   const originalHeight = video.videoHeight;
