@@ -1,5 +1,5 @@
 import { usePinch } from "@use-gesture/react";
-import { forwardRef, useRef, useState } from "react";
+import { forwardRef, useEffect, useRef, useState } from "react";
 import Webcam from "react-webcam";
 
 const videoConstraints: MediaTrackConstraints = {
@@ -30,6 +30,21 @@ export const Camera = forwardRef<Webcam>(function Camera(_, cameraRef) {
       },
     }
   );
+
+  // safariだと画面全体のピンチズームが行われてしまうので防ぐ
+  useEffect(() => {
+    const touchHandler = (event: TouchEvent) => {
+      if (event.touches.length > 1) {
+        event.preventDefault();
+      }
+    };
+    document.addEventListener("touchstart", touchHandler, {
+      passive: false,
+    });
+    return () => {
+      document.removeEventListener("touchstart", touchHandler);
+    };
+  }, []);
 
   return (
     <div
