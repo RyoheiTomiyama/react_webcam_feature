@@ -1,6 +1,7 @@
 import { usePinch } from "@use-gesture/react";
 import { forwardRef, useEffect, useRef, useState } from "react";
 import Webcam from "react-webcam";
+import { CameraInfo } from "./CameraInfo";
 
 const videoConstraints: MediaTrackConstraints = {
   width: {
@@ -14,6 +15,7 @@ const videoConstraints: MediaTrackConstraints = {
 
 export const Camera = forwardRef<Webcam>(function Camera(_, cameraRef) {
   const targetRef = useRef<HTMLDivElement>(null);
+  const [video, setVideo] = useState<HTMLVideoElement>();
 
   const [zoom, setZoom] = useState(1);
 
@@ -68,7 +70,17 @@ export const Camera = forwardRef<Webcam>(function Camera(_, cameraRef) {
         }}
       >
         <Webcam
-          ref={cameraRef}
+          ref={(e) => {
+            if (!cameraRef) {
+              return;
+            }
+            setVideo(e?.video ?? undefined);
+            if (typeof cameraRef === "function") {
+              cameraRef(e);
+            } else {
+              cameraRef.current = e;
+            }
+          }}
           screenshotFormat="image/jpeg"
           screenshotQuality={1}
           videoConstraints={videoConstraints}
@@ -78,6 +90,17 @@ export const Camera = forwardRef<Webcam>(function Camera(_, cameraRef) {
             objectFit: "cover",
           }}
         />
+      </div>
+
+      <div
+        style={{
+          position: "absolute",
+          bottom: 8,
+          right: 8,
+          textAlign: "right",
+        }}
+      >
+        <CameraInfo video={video} />
       </div>
     </div>
   );
