@@ -19,7 +19,7 @@ export const useCamera = ({ ref }: UseCameraProps) => {
   //   }
   // }, [ref]);
 
-  const getScreenshot = useCallback(() => {
+  const getScreenshot = useCallback(async () => {
     const video = ref.current?.video;
     if (!video) {
       return;

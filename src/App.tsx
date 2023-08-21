@@ -1,4 +1,4 @@
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 import Webcam from "react-webcam";
 import "./App.css";
 import { Camera, useCamera } from "./Camera";
@@ -6,9 +6,12 @@ import { Camera, useCamera } from "./Camera";
 function App() {
   const cameraRef = useRef<Webcam>(null);
   const { getScreenshot } = useCamera({ ref: cameraRef });
+  const [loading, setLoading] = useState(false);
 
-  const handleCapture = useCallback(() => {
-    console.log(getScreenshot());
+  const handleCapture = useCallback(async () => {
+    setLoading(true);
+    await getScreenshot();
+    setLoading(false);
   }, [getScreenshot]);
 
   return (
@@ -28,7 +31,11 @@ function App() {
           bottom: "50%",
           left: 20,
         }}
+        disabled={loading}
       >
+        {loading && (
+          <i className="fa fa-spinner fa-spin" style={{ marginRight: 4 }}></i>
+        )}
         Capture
       </button>
     </div>
