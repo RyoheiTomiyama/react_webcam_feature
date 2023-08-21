@@ -10,8 +10,10 @@ function App() {
 
   const handleCapture = useCallback(async () => {
     setLoading(true);
-    await getScreenshot();
-    setLoading(false);
+    await setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+    getScreenshot();
   }, [getScreenshot]);
 
   return (
